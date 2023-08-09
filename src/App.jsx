@@ -1,10 +1,13 @@
 
+
 import './App.css'
+import FetchData from './components/FetchData';
 import FirstComponent from './components/FirstComponent';
 import SecondComponent from './components/SecondComponent';
 import Student from './components/Student';
 
 function App() {
+
   const someData = "Hello there!";
   const students = [
     {
@@ -39,13 +42,15 @@ const handleClickParent = (name) => {
     <>
       <FirstComponent greeting={someData} />
       <SecondComponent />
-
       <button onClick={handleClick}>click me from parent</button>
-
       {/*Using the map method, the students array is iterated, and for each student, the Student component is rendered. StudentName and the handleClickParent function are passed as a props */}
       {students.map((student => (
         <Student key={student.id} studentName={student.name} clickFunction={handleClickParent} />
       )))}
+      <FetchData /> 
+
+    
+      
 
       
     </>

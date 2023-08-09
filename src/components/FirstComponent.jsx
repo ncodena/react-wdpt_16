@@ -1,5 +1,5 @@
 function FirstComponent({greeting}) {
-  
+
     return (
       <div className="firstComponentParent">
         {greeting}
