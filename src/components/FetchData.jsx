@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 const FetchData = () => {
 const [data, setData] = useState([]);
 
+
    useEffect(() => {
         myFetchFunction();
    }, []);
