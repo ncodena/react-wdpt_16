@@ -1,76 +1,71 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
+import NewsList from './NewsList';
+import SearchBar from './SearchBar';
 
 const FetchData = () => {
 const [data, setData] = useState([]);
+const [query, setQuery] = useState("");
+const [page, setPage] = useState(1);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState(null);
 
+const handleSubmit = async ( query, pageNum) => {
+    setLoading(true);
+    setError(null);
 
-   useEffect(() => {
-        myFetchFunction();
-   }, []);
+    try {
+      const response = await fetch(
+        `https://hn.algolia.com/api/v1/search?query=${query}&page=${pageNum}`
+      );
+      const data = await response.json();
+      setData(data.hits);
+    } catch (err) {
+        setError('Error fetching data.');
+    } finally {
+        setLoading(false);
+    }
+  };
 
-   
-   const myFetchFunction = () => {
-    fetch('https://jsonplaceholder.typicode.com/posts')
-    .then((response) => {
-        if(!response.ok){
-            throw new Error(`The fetch has failed with status ${response.status}`);
-        }
+  const fetchNews = async (query, pageNum) => {
+    setLoading(true);
+    setError(null);
 
-        return response.json();
-    })
-    
-    .then((data) => {
-        setData(data)
-    })
-    .catch((error) => {
-        console.log('error', error)
-    })
-    .finally(() => {
-        console.log('fetch completed')
-    })
-   }
+    try {
+      const response = await fetch(
+        `https://hn.algolia.com/api/v1/search?query=${query}&page=${pageNum}`
+      );
+      const data = await response.json();
+      setData(data.hits);
+    } catch (err) {
+        setError('Error fetching data.');
+    } finally {
+        setLoading(false);
+    }
+  };
 
-   const sendRequest = async () => {
+  useEffect(() => {
+    fetchNews(query, page);
+  }, []);
 
-    const dataToSend = {
-        title: 'foo',
-        body: 'bar',
-        userId: 1,
-    };
+  useEffect(() => {
+    fetchNews(query, page);
+  }, [page]);
 
-        try {
-            const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-            method: 'POST',
-            body: JSON.stringify(dataToSend),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            }
-            })
-
-            if(!response.ok){
-                throw new Error(`The fetch has failed with status ${response.status}`);
-            }
-
-            const dataReceived = await response.json();
-
-            console.log(dataReceived, 'received')
-
-        } catch(error){
-            console.log(error, 'error')
-
-        } finally {
-            console.log('request and response completed')
-        }
-
-   }
-
+  const handlePageChange = (direction) => {
+    if (direction === 'prev' && page > 0) {
+      setPage(page - 1);
+    } else if (direction === 'next') {
+      setPage(page + 1);
+    }
+  };
+  
   return (
     <div>
-        {data.length ? data.map((post) => (
-            <div key={post.id}>{post.title}</div>
-        )) : null}
-        <button onClick={sendRequest}>Post request</button>
+        <h1>Hacker News Search</h1>
+        <SearchBar onSearch={handleSubmit} page={page} setQuery={setQuery} query={query} />
+        {loading ? <p>Loading...</p> : <NewsList articles={data} onPageChange={handlePageChange} />}
+        {error && <p>{error}</p>}
     </div>
   )
 }
