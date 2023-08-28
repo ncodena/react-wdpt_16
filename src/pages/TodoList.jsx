@@ -1,117 +1,59 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import TodoItem from '../components/TodoItem';
+import React, { useState, useEffect } from 'react';
 
 const TodoList = () => {
-    const [newTask, setNewTask] = useState("");
-    const [taskList, setTaskList] = useState([]);
-    const [editing, setEditing] = useState(null)
-    const [editingText, setEditingText] = useState("")
-    
+  const [todos, setTodos] = useState([]);
+  const [text, setText] = useState('');
+  
+  useEffect(() => {
+    console.log('entra 1')
 
-    useEffect(() => {
-        const retrievedList = localStorage.getItem("items")
-        const loadedList  = JSON.parse(retrievedList)
+    const storedTodos = JSON.parse(localStorage.getItem('todos')) || [];
+    setTodos(storedTodos);
+  }, []);
 
-        if(loadedList){
-            setTaskList(loadedList)
-        }
-    }, [])
+  useEffect(() => {
+    console.log('entra 2')
 
-    
-    useEffect(() => {
-        const storedList = JSON.stringify(taskList)
-        localStorage.setItem("items", storedList)
-    }, [taskList])
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
 
-
-
-    const addTask = () => {
-        const task = {
-            id: Date.now(),
-            taskName: newTask,
-            completed: false
-        }
-        setTaskList([...taskList, task]);
+  const addTodo = (e) => {
+    e.preventDefault();
+    if (text.trim() !== '') {
+        const newTodo = { id: Date.now(), text };
+        setTodos([...todos, newTodo]);
+      setText('');
     }
+  };
 
-    const deleteTask = (id) => {
-        setTaskList(taskList.filter((task) => task.id !== id))
-    }
+  const deleteTodo = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
 
-    const editTask = (id) => {
-        const updatedTask = [...taskList].map((newTask) => {
-            if (newTask.id === id) {
-                newTask.taskName = editingText
-            }
-            return newTask
-        })
-        setTaskList(updatedTask);
-        setEditing(null);
-        setEditingText("");
-    }
+  const updateTodo = (id, newText) => {
+    setTodos(todos.map(todo => (todo.id === id ? { ...todo, text: newText } : todo)));
+  };
 
-    const completeTask = () => {
-        setTaskList(
-            taskList.map((newTask) => {
-                if (newTask.id === id) {
-                    return { ...newTask, completed: true }
-                } else {
-                    return newTask
-                }
-            })
-        )
-    }
+  return (
+    <div className="todo-list">
+      <h1>ToDo List</h1>
+      <form onSubmit={addTodo}>
+        <input
+          type="text"
+          placeholder="Add a new task"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        <button type='submit'>Add</button>
+      </form>
+      <div className="todo-items">
+        {todos.map(todo => (
+          <TodoItem key={todo.id} todo={todo} onDelete={deleteTodo} onUpdate={updateTodo} />
+        ))}
+      </div>
+    </div>
+  );
+};
 
-    const handleEdit = (id, text) => {
-        setEditing(id)
-        setEditingText(text)
-    }
-
-    return (
-        <div>
-            <div>
-                <input onChange={(e) => setNewTask(e.target.value)} placeholder="Type something..." value={newTask}/>
-                <button onClick={addTask}>ADD</button>
-            </div>
-            <div>
-                <h2>Task</h2>
-
-                {taskList.map((newTask, index) => {
-                    return (                                            
-                        <div key={index}>
-
-                            {editing === newTask.id ? 
-                            (
-                                <div>
-                                <input
-                                type="text"
-                                onChange={(e) => setEditingText(e.target.value)}
-                                value={editingText} /> 
-                                <button onClick={() => editTask(newTask.id)}>SAVE EDIT</button>
-                                </div>
-                            )
-                            :
-                            (
-                                <div>
-                                <p>{newTask.taskName}</p>
-                                <button onClick={() => handleEdit(newTask.id, newTask.taskName)}>EDIT</button>
-                                </div>
-                            )
-                            }
-
-                        {/* <input
-                            type="checkbox"
-                            onClick={() => completeTask(newTask.id)}
-                            checked={newTask.completed}/> */}
-
-                        <button onClick={() => deleteTask(newTask.id)}>DELETE</button>
-                        </div>
-                    )
-                } ) }
-
-                    </div>
-                </div>)
-    }
-         
-
-export default TodoList
+export default TodoList;

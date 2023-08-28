@@ -9,7 +9,7 @@ import Home from './pages/Home';
 import Post from './pages/Post';
 import Posts from './pages/Posts';
 import TodoList from './pages/TodoList';
-import Info from './pages/Info';
+import Quote from './pages/Info';
 
 function App() {
 
@@ -19,7 +19,7 @@ function App() {
         
         <Route path='/' element={<Navbar />}>
           <Route index element={<TodoList />} />
-          <Route path="info" element={<Info />} />
+          <Route path="info" element={<Quote />} />
           <Route path="posts" element={<Posts />} />
           <Route path="post/:id" element={<Post />} />
         </Route>
