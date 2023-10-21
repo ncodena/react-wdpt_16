@@ -11,7 +11,7 @@ const Home = () => {
     const fetchFilms = async () => {
       try {
         // Make the GET request
-        const response = await axios.get(`${process.env.VITE_BACKEND_URL}/api/films`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/films`);
         console.log(response, 'response')
 
         // Update the films state with data from the response
