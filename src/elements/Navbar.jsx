@@ -4,13 +4,13 @@ import { Outlet, NavLink } from 'react-router-dom';
 const Navbar = () => {
   return (
     <div>
-        <nav>
+        {/* <nav>
             <ul>
                 <li>
-                    <NavLink to="/">Meme generator</NavLink>
+                    <NavLink to="/">Contentful</NavLink>
                 </li>
             </ul>
-        </nav>
+        </nav> */}
         <Outlet />
     </div>
     
