@@ -5,15 +5,21 @@ const Home = () => {
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log(import.meta.env.VITE_BACKEND_URL)
+
+
   useEffect(() => {
     // Define an async function
     const fetchFilms = async () => {
+      const token = sessionStorage.getItem('jwt');
+      
       try {
         // Make the GET request
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/films`);
-        console.log(response, 'response')
-
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/films`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
         // Update the films state with data from the response
         setFilms(response.data);
 
@@ -26,12 +32,9 @@ const Home = () => {
         setLoading(false);
       }
     };
-
-    console.log(films, 'films')
-
     // Call the async function
     fetchFilms();
-  }, []);  // The empty dependency array means this useEffect will run once, similar to componentDidMount()
+  }, []); 
   return (
     <div>
       {films.length ? films.map((film) => (
