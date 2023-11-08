@@ -1,22 +1,20 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
+import { useContext } from 'react';
 
 const Navbar = () => {
-  const navigate = useNavigate();
+  const {user, token, logout} = useContext(UserContext);
 
-  const isAuthenticated = sessionStorage.getItem('jwt');
+  console.log(user, 'user', token, 'token')
 
-
-  const logout = () => {
-    sessionStorage.removeItem('jwt')
-    navigate("/sign-in");
-  }
 
   return (
     <div>
         <nav>
         <div style={{display: 'flex', justifyContent: 'flex-end', gap: '2em'}}>
-                {isAuthenticated ? (
+                {token ? (
                   <>
+                  <div>Welcome <strong>{user ? user.name : null}</strong></div>
                    <NavLink to="/">Films</NavLink>
                     <button onClick={logout}>Logout</button>
                   </>

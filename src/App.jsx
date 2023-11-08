@@ -7,7 +7,6 @@ import Login from './pages/Login';
 import PublicRoutes from './routes/PublicRoutes';
 import PrivateRoutes from './routes/PrivateRoutes';
 
-
 function App() {
   return (
     <>

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import {Link} from 'react-router-dom'
+import { UserContext } from '../context/UserContext';
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,31 +10,11 @@ const Login = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const api_url = import.meta.env.VITE_BACKEND_URL;
+  const {login} = useContext(UserContext)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const payload = { email, password };
-    setLoading(true);
-    try {
-      const response = await axios.post(api_url + '/api/auth/login', payload, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const { token } = response.data;
-      sessionStorage.setItem('jwt', token);
-      setSuccess(true);
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
-    } catch (e) {
-        console.log(e.response.data)
-      setError(e.response.data);
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-    } finally {
-      setLoading(false);
-    }
+    login(email, password, setLoading, setSuccess, setError);
   };
 
   return (

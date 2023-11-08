@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios';
-import ChatComponent from '../components/ChatComponent';
-
 const Home = () => {
 
   const [films, setFilms] = useState([]);
@@ -46,7 +44,6 @@ const Home = () => {
           <p>{film.genre}</p>
         </div>
       )): null}
-      <ChatComponent />
     </div>
   )
 }
