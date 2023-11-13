@@ -6,11 +6,53 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [file, setFile] = useState(null);
+  const token = sessionStorage.getItem('jwt');
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/films/upload`, formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/films/images`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        setImages(response.data);
+      } catch (error) {
+        console.error('Error fetching images', error);
+      }
+    };
+
+    fetchImages();
+  }, []);
+
 
   useEffect(() => {
     // Define an async function
     const fetchFilms = async () => {
-      const token = sessionStorage.getItem('jwt');
+      
       
       try {
         // Make the GET request
@@ -44,6 +86,27 @@ const Home = () => {
           <p>{film.genre}</p>
         </div>
       )): null}
+
+      <select>
+        {films.length ? 
+        //  <option value="">--Please choose an option--</option>
+        films.map(city => (
+          <option value={city._id}>{city.name}</option>
+          ))
+        :null}
+      </select>
+
+      <form onSubmit={submitHandler}>
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        <button type="submit">Upload</button>
+      </form>
+
+      {images.length ? images.map((image, index) => (
+        <div key={index}>
+          <h3>{image.filename}</h3>
+          <img src={`data:${image.contentType};base64,${image.imageBase64}`} alt={image.filename} />
+        </div>
+      )) : null}
     </div>
   )
 }
