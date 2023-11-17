@@ -13,10 +13,12 @@ function App() {
       <Navbar />
       <Routes>
           <Route path="/" element={<PrivateRoutes />}>
+
             <Route index element={<Home />} />
             <Route path='*' element={<Navigate to={"/"} />} />
           </Route>
           <Route path="/*" element={<PublicRoutes />}>
+            
             <Route path="sign-up" element={<Register />} />
             <Route path="sign-in" element={<Login />} />
             <Route path='*' element={<Navigate to={"/sign-in"} />} />
