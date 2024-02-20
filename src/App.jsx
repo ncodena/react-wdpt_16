@@ -17,7 +17,7 @@ function App() {
     <>
       <Routes>
         
-        <Route path='/' element={<Navbar />}>
+        <Route path='/'>
           <Route index element={<TodoList />} />
           <Route path="info" element={<Info />} />
           <Route path="posts" element={<Posts />} />
